@@ -1,0 +1,2134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NaviNooks — Your Perfect Trip, Planned by AI</title>
+  <meta name="description" content="AI-powered travel planner for 30+ cities. Smart itineraries, flight & hotel booking, real-time weather, ride coordination — all in one app." />
+  <meta name="keywords" content="travel planner, AI itinerary, trip planning app, smart travel, city guide" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="NaviNooks — Your Perfect Trip, Planned by AI" />
+  <meta property="og:description" content="Plan, book, and experience your perfect trip with AI-powered smart planning." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="assets/logo.png" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+  <style>
+    /* ═══════════════════════════════════════════
+       CSS RESET & VARIABLES
+    ═══════════════════════════════════════════ */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --primary: #4ECDC4;
+      --primary-dark: #3BA89F;
+      --secondary: #00D9FF;
+      --accent: #FF6B6B;
+      --accent-warm: #FFE66D;
+      --bg-dark: #0A0E17;
+      --bg-card: #111827;
+      --bg-card-hover: #1A2332;
+      --bg-glass: rgba(255, 255, 255, 0.04);
+      --bg-glass-hover: rgba(255, 255, 255, 0.08);
+      --border-glass: rgba(255, 255, 255, 0.08);
+      --border-glass-hover: rgba(78, 205, 196, 0.3);
+      --text-primary: #FFFFFF;
+      --text-secondary: #94A3B8;
+      --text-muted: #64748B;
+      --gradient-primary: linear-gradient(135deg, #4ECDC4, #00D9FF);
+      --gradient-warm: linear-gradient(135deg, #FF6B6B, #FFE66D);
+      --gradient-hero: linear-gradient(135deg, #0A0E17 0%, #111827 50%, #0F172A 100%);
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-display: 'Playfair Display', Georgia, serif;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 24px;
+      --radius-full: 9999px;
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.3);
+      --shadow-md: 0 4px 24px rgba(0,0,0,0.4);
+      --shadow-lg: 0 8px 48px rgba(0,0,0,0.5);
+      --shadow-glow: 0 0 40px rgba(78, 205, 196, 0.15);
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    html { scroll-behavior: smooth; font-size: 16px; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    a { text-decoration: none; color: inherit; }
+    img { max-width: 100%; display: block; }
+    button { cursor: pointer; border: none; font-family: inherit; }
+
+    /* ═══════════════════════════════════════════
+       UTILITIES
+    ═══════════════════════════════════════════ */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    .container-wide {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    .section { padding: 120px 0; position: relative; }
+    .section-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin-bottom: 16px;
+      display: block;
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 20px;
+    }
+    .section-subtitle {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      max-width: 600px;
+      line-height: 1.7;
+    }
+    .text-gradient {
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .glass-card {
+      background: var(--bg-glass);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-lg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      transition: var(--transition);
+    }
+    .glass-card:hover {
+      background: var(--bg-glass-hover);
+      border-color: var(--border-glass-hover);
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-glow);
+    }
+
+    /* ═══════════════════════════════════════════
+       NOISE TEXTURE OVERLAY
+    ═══════════════════════════════════════════ */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+    }
+    body > * { position: relative; z-index: 1; }
+
+    /* ═══════════════════════════════════════════
+       ANIMATIONS
+    ═══════════════════════════════════════════ */
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeInLeft {
+      from { opacity: 0; transform: translateX(-40px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes fadeInRight {
+      from { opacity: 0; transform: translateX(40px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes scaleIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 20px rgba(78, 205, 196, 0.2); }
+      50% { box-shadow: 0 0 40px rgba(78, 205, 196, 0.4); }
+    }
+    @keyframes gradient-shift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    @keyframes orbit {
+      from { transform: rotate(0deg) translateX(160px) rotate(0deg); }
+      to { transform: rotate(360deg) translateX(160px) rotate(-360deg); }
+    }
+
+    .animate-on-scroll {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .animate-on-scroll.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Stagger children */
+    .stagger-children > * { transition-delay: calc(var(--i, 0) * 0.1s); }
+
+    /* ═══════════════════════════════════════════
+       NAVIGATION
+    ═══════════════════════════════════════════ */
+    .navbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      padding: 16px 0;
+      transition: var(--transition);
+    }
+    .navbar.scrolled {
+      background: rgba(10, 14, 23, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-glass);
+      padding: 12px 0;
+    }
+    .navbar .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+      font-size: 1.3rem;
+    }
+    .nav-brand img {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-sm);
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      transition: var(--transition);
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--gradient-primary);
+      border-radius: 2px;
+      transition: width 0.3s ease;
+    }
+    .nav-links a:hover { color: var(--text-primary); }
+    .nav-links a:hover::after { width: 100%; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 28px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      border-radius: var(--radius-full);
+      transition: var(--transition);
+    }
+    .btn-primary {
+      background: var(--gradient-primary);
+      color: #0A0E17;
+      box-shadow: 0 4px 20px rgba(78, 205, 196, 0.3);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 30px rgba(78, 205, 196, 0.5);
+    }
+    .btn-secondary {
+      background: var(--bg-glass);
+      color: var(--text-primary);
+      border: 1px solid var(--border-glass);
+    }
+    .btn-secondary:hover {
+      background: var(--bg-glass-hover);
+      border-color: var(--border-glass-hover);
+    }
+    .btn-large {
+      padding: 16px 36px;
+      font-size: 1rem;
+    }
+
+    .mobile-toggle {
+      display: none;
+      background: none;
+      color: var(--text-primary);
+      font-size: 1.5rem;
+      padding: 8px;
+    }
+
+    /* ═══════════════════════════════════════════
+       HERO SECTION
+    ═══════════════════════════════════════════ */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      padding-top: 80px;
+    }
+
+    /* Animated gradient orbs */
+    .hero-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.4;
+      animation: float 8s ease-in-out infinite;
+    }
+    .hero-orb-1 {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(78, 205, 196, 0.3), transparent);
+      top: -100px; right: -100px;
+      animation-delay: 0s;
+    }
+    .hero-orb-2 {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(0, 217, 255, 0.2), transparent);
+      bottom: -50px; left: -100px;
+      animation-delay: -3s;
+    }
+    .hero-orb-3 {
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(255, 107, 107, 0.15), transparent);
+      top: 30%; left: 40%;
+      animation-delay: -5s;
+    }
+
+    .hero .container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+    .hero-content { z-index: 2; }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 20px;
+      background: var(--bg-glass);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-full);
+      font-size: 0.85rem;
+      color: var(--primary);
+      font-weight: 500;
+      margin-bottom: 32px;
+      animation: fadeInUp 0.8s ease forwards;
+    }
+    .hero-badge .dot {
+      width: 8px; height: 8px;
+      background: var(--primary);
+      border-radius: 50%;
+      animation: pulse-glow 2s ease-in-out infinite;
+    }
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.8rem, 5.5vw, 4.5rem);
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 24px;
+      animation: fadeInUp 0.8s ease 0.1s forwards;
+      opacity: 0;
+    }
+    .hero-description {
+      font-size: 1.2rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: 40px;
+      max-width: 520px;
+      animation: fadeInUp 0.8s ease 0.2s forwards;
+      opacity: 0;
+    }
+    .hero-actions {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 48px;
+      animation: fadeInUp 0.8s ease 0.3s forwards;
+      opacity: 0;
+    }
+    .hero-stats {
+      display: flex;
+      gap: 48px;
+      animation: fadeInUp 0.8s ease 0.4s forwards;
+      opacity: 0;
+    }
+    .hero-stat {
+      display: flex;
+      flex-direction: column;
+    }
+    .hero-stat-number {
+      font-size: 2rem;
+      font-weight: 800;
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-stat-label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* Phone mockup */
+    .hero-visual {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      animation: fadeInRight 1s ease 0.3s forwards;
+      opacity: 0;
+    }
+    .phone-mockup {
+      position: relative;
+      width: 300px;
+      height: 620px;
+      background: linear-gradient(145deg, #1A2332, #111827);
+      border-radius: 44px;
+      padding: 12px;
+      box-shadow: 0 25px 80px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+      border: 2px solid rgba(255,255,255,0.08);
+      animation: float 6s ease-in-out infinite;
+    }
+    .phone-screen {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(180deg, #0F172A 0%, #1E293B 40%, #0F172A 100%);
+      border-radius: 34px;
+      overflow: hidden;
+      position: relative;
+    }
+    .phone-notch {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 28px;
+      background: #000;
+      border-radius: 0 0 18px 18px;
+      z-index: 10;
+    }
+    .phone-screen-content {
+      padding: 48px 20px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      height: 100%;
+    }
+    .phone-header {
+      text-align: center;
+      margin-bottom: 4px;
+    }
+    .phone-header h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+    .phone-header p {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+    .phone-card {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .phone-card-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 1.2rem;
+    }
+    .phone-card-text h4 {
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    .phone-card-text p {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+    }
+    .phone-card-time {
+      margin-left: auto;
+      font-size: 0.7rem;
+      color: var(--primary);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .phone-bottom-bar {
+      margin-top: auto;
+      display: flex;
+      justify-content: space-around;
+      padding: 12px 0 4px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .phone-tab {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.55rem;
+      color: var(--text-muted);
+    }
+    .phone-tab.active { color: var(--primary); }
+    .phone-tab i { font-size: 1rem; }
+
+    /* Floating elements around phone */
+    .floating-card {
+      position: absolute;
+      background: rgba(17, 24, 39, 0.9);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: var(--radius-md);
+      padding: 12px 18px;
+      backdrop-filter: blur(20px);
+      box-shadow: var(--shadow-md);
+      white-space: nowrap;
+      font-size: 0.85rem;
+      font-weight: 500;
+      z-index: 5;
+    }
+    .floating-card-1 {
+      top: 60px; right: -40px;
+      animation: float 5s ease-in-out infinite;
+      animation-delay: -1s;
+    }
+    .floating-card-2 {
+      bottom: 120px; left: -50px;
+      animation: float 6s ease-in-out infinite;
+      animation-delay: -2s;
+    }
+    .floating-card-3 {
+      top: 220px; left: -60px;
+      animation: float 5.5s ease-in-out infinite;
+      animation-delay: -3s;
+    }
+    .floating-card .fc-icon {
+      display: inline-flex;
+      margin-right: 8px;
+    }
+
+    /* ═══════════════════════════════════════════
+       LOGO MARQUEE / TRUST BAR
+    ═══════════════════════════════════════════ */
+    .trust-bar {
+      padding: 40px 0;
+      border-top: 1px solid var(--border-glass);
+      border-bottom: 1px solid var(--border-glass);
+      background: rgba(255,255,255,0.01);
+      overflow: hidden;
+    }
+    .trust-bar-label {
+      text-align: center;
+      font-size: 0.8rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+    .trust-logos {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 60px;
+      flex-wrap: wrap;
+    }
+    .trust-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 1rem;
+      opacity: 0.5;
+      transition: var(--transition);
+    }
+    .trust-logo:hover { opacity: 1; color: var(--text-secondary); }
+    .trust-logo svg, .trust-logo i { font-size: 1.4rem; }
+
+    /* ═══════════════════════════════════════════
+       FEATURES SECTION
+    ═══════════════════════════════════════════ */
+    .features { background: var(--bg-dark); }
+    .features-header {
+      text-align: center;
+      margin-bottom: 80px;
+    }
+    .features-header .section-subtitle {
+      margin: 0 auto;
+    }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .feature-card {
+      padding: 36px 28px;
+      position: relative;
+      overflow: hidden;
+    }
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 3px;
+      background: var(--gradient-primary);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .feature-card:hover::before { opacity: 1; }
+    .feature-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      font-size: 1.5rem;
+    }
+    .feature-icon.teal { background: rgba(78, 205, 196, 0.12); color: var(--primary); }
+    .feature-icon.blue { background: rgba(0, 217, 255, 0.12); color: var(--secondary); }
+    .feature-icon.red { background: rgba(255, 107, 107, 0.12); color: var(--accent); }
+    .feature-icon.yellow { background: rgba(255, 230, 109, 0.12); color: var(--accent-warm); }
+    .feature-icon.purple { background: rgba(168, 85, 247, 0.12); color: #A855F7; }
+    .feature-icon.green { background: rgba(34, 197, 94, 0.12); color: #22C55E; }
+    .feature-card h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .feature-card p {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* ═══════════════════════════════════════════
+       HOW IT WORKS
+    ═══════════════════════════════════════════ */
+    .how-it-works {
+      background: linear-gradient(180deg, var(--bg-dark) 0%, #0F172A 100%);
+    }
+    .how-it-works-header {
+      text-align: center;
+      margin-bottom: 80px;
+    }
+    .how-it-works-header .section-subtitle {
+      margin: 0 auto;
+    }
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 40px;
+      position: relative;
+    }
+    /* Connector line */
+    .steps::before {
+      content: '';
+      position: absolute;
+      top: 52px;
+      left: calc(16.67% + 20px);
+      right: calc(16.67% + 20px);
+      height: 2px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+      opacity: 0.3;
+    }
+    .step {
+      text-align: center;
+      position: relative;
+    }
+    .step-number {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin: 0 auto 24px;
+      position: relative;
+      z-index: 2;
+    }
+    .step:nth-child(1) .step-number {
+      background: rgba(78, 205, 196, 0.15);
+      color: var(--primary);
+      border: 2px solid rgba(78, 205, 196, 0.3);
+    }
+    .step:nth-child(2) .step-number {
+      background: rgba(0, 217, 255, 0.15);
+      color: var(--secondary);
+      border: 2px solid rgba(0, 217, 255, 0.3);
+    }
+    .step:nth-child(3) .step-number {
+      background: rgba(255, 107, 107, 0.15);
+      color: var(--accent);
+      border: 2px solid rgba(255, 107, 107, 0.3);
+    }
+    .step-icon {
+      font-size: 2.5rem;
+      margin-bottom: 16px;
+    }
+    .step h3 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .step p {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      max-width: 300px;
+      margin: 0 auto;
+    }
+
+    /* ═══════════════════════════════════════════
+       SHOWCASE / BENTO GRID
+    ═══════════════════════════════════════════ */
+    .showcase { background: var(--bg-dark); }
+    .showcase-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+    .showcase-header .section-subtitle { margin: 0 auto; }
+
+    .bento-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: auto auto;
+      gap: 20px;
+    }
+    .bento-item {
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      position: relative;
+      background: var(--bg-card);
+      border: 1px solid var(--border-glass);
+      transition: var(--transition);
+      min-height: 260px;
+    }
+    .bento-item:hover {
+      border-color: var(--border-glass-hover);
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-glow);
+    }
+    .bento-item.span-2 { grid-column: span 2; }
+    .bento-item.span-3 { grid-column: span 3; }
+    .bento-item.tall { grid-row: span 2; }
+
+    .bento-bg {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      opacity: 0.35;
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .bento-item:hover .bento-bg {
+      opacity: 0.5;
+      transform: scale(1.05);
+    }
+    .bento-content {
+      position: relative;
+      z-index: 2;
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      height: 100%;
+      background: linear-gradient(to top, rgba(10, 14, 23, 0.95) 0%, rgba(10, 14, 23, 0.4) 60%, transparent 100%);
+    }
+    .bento-icon {
+      font-size: 2rem;
+      margin-bottom: 12px;
+    }
+    .bento-content h3 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .bento-content p {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* ═══════════════════════════════════════════
+       CITIES SECTION
+    ═══════════════════════════════════════════ */
+    .cities-section {
+      background: linear-gradient(180deg, #0F172A 0%, var(--bg-dark) 100%);
+      overflow: hidden;
+    }
+    .cities-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+    .cities-header .section-subtitle { margin: 0 auto; }
+
+    .cities-scroll-container {
+      position: relative;
+      margin: 0 -24px;
+      padding: 0 24px;
+    }
+    .cities-row {
+      display: flex;
+      gap: 20px;
+      animation: marquee 60s linear infinite;
+      width: max-content;
+    }
+    .cities-row:hover { animation-play-state: paused; }
+    .cities-row-reverse {
+      animation-direction: reverse;
+      margin-top: 20px;
+    }
+
+    .city-card {
+      flex-shrink: 0;
+      width: 280px;
+      height: 180px;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+      border: 1px solid var(--border-glass);
+    }
+    .city-card-bg {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      transition: transform 0.5s ease;
+    }
+    .city-card:hover .city-card-bg { transform: scale(1.1); }
+    .city-card-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.1) 60%);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 20px;
+    }
+    .city-card h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+    .city-card p {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    /* ═══════════════════════════════════════════
+       TESTIMONIALS
+    ═══════════════════════════════════════════ */
+    .testimonials {
+      background: var(--bg-dark);
+    }
+    .testimonials-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+    .testimonials-header .section-subtitle { margin: 0 auto; }
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .testimonial-card {
+      padding: 32px;
+    }
+    .testimonial-stars {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 16px;
+      color: #FBBF24;
+      font-size: 0.9rem;
+    }
+    .testimonial-text {
+      font-size: 1rem;
+      line-height: 1.7;
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+      font-style: italic;
+    }
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .testimonial-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--gradient-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--bg-dark);
+    }
+    .testimonial-info h4 {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+    .testimonial-info p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    /* ═══════════════════════════════════════════
+       PRICING SECTION
+    ═══════════════════════════════════════════ */
+    .pricing {
+      background: linear-gradient(180deg, var(--bg-dark) 0%, #0F172A 100%);
+    }
+    .pricing-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+    .pricing-header .section-subtitle { margin: 0 auto; }
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .pricing-card {
+      padding: 40px 32px;
+      text-align: center;
+      position: relative;
+    }
+    .pricing-card.featured {
+      border-color: var(--primary);
+      background: rgba(78, 205, 196, 0.04);
+      box-shadow: 0 0 60px rgba(78, 205, 196, 0.08);
+    }
+    .pricing-card.featured::before {
+      content: 'Most Popular';
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--gradient-primary);
+      color: var(--bg-dark);
+      padding: 4px 20px;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .pricing-plan-name {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+    .pricing-price {
+      font-size: 3rem;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+    .pricing-price span {
+      font-size: 1rem;
+      font-weight: 400;
+      color: var(--text-muted);
+    }
+    .pricing-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 32px;
+    }
+    .pricing-features {
+      list-style: none;
+      text-align: left;
+      margin-bottom: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .pricing-features li {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .pricing-features li i {
+      color: var(--primary);
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .pricing-card .btn {
+      width: 100%;
+      justify-content: center;
+    }
+
+    /* ═══════════════════════════════════════════
+       CTA SECTION
+    ═══════════════════════════════════════════ */
+    .cta-section {
+      padding: 120px 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-bg {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(78, 205, 196, 0.08), rgba(0, 217, 255, 0.05), rgba(255, 107, 107, 0.03));
+    }
+    .cta-content {
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
+    .cta-content .section-title {
+      font-size: clamp(2.2rem, 4vw, 3.5rem);
+      margin-bottom: 20px;
+    }
+    .cta-content .section-subtitle {
+      margin: 0 auto 40px;
+      text-align: center;
+    }
+    .cta-actions {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+    }
+
+    /* App store buttons */
+    .store-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 28px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-md);
+      transition: var(--transition);
+    }
+    .store-btn:hover {
+      border-color: var(--border-glass-hover);
+      background: var(--bg-card-hover);
+      transform: translateY(-2px);
+    }
+    .store-btn-icon { font-size: 1.6rem; }
+    .store-btn-text {
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+    }
+    .store-btn-text small {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      line-height: 1;
+    }
+    .store-btn-text strong {
+      font-size: 1rem;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    /* ═══════════════════════════════════════════
+       FOOTER
+    ═══════════════════════════════════════════ */
+    .footer {
+      background: #060911;
+      border-top: 1px solid var(--border-glass);
+      padding: 60px 0 30px;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 48px;
+      margin-bottom: 48px;
+    }
+    .footer-brand p {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-top: 16px;
+      max-width: 300px;
+    }
+    .footer-social {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .footer-social a {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--bg-glass);
+      border: 1px solid var(--border-glass);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+      color: var(--text-secondary);
+    }
+    .footer-social a:hover {
+      background: var(--primary);
+      color: var(--bg-dark);
+      border-color: var(--primary);
+    }
+    .footer-column h4 {
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--text-primary);
+      margin-bottom: 20px;
+    }
+    .footer-column ul { list-style: none; }
+    .footer-column li { margin-bottom: 12px; }
+    .footer-column a {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      transition: var(--transition);
+    }
+    .footer-column a:hover { color: var(--primary); }
+    .footer-bottom {
+      padding-top: 30px;
+      border-top: 1px solid var(--border-glass);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .footer-bottom p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    .footer-bottom-links {
+      display: flex;
+      gap: 24px;
+    }
+    .footer-bottom-links a {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      transition: var(--transition);
+    }
+    .footer-bottom-links a:hover { color: var(--text-secondary); }
+
+    /* ═══════════════════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════════════════ */
+    @media (max-width: 1024px) {
+      .hero .container {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 60px;
+      }
+      .hero-description { margin: 0 auto 40px; }
+      .hero-actions { justify-content: center; }
+      .hero-stats { justify-content: center; }
+      .features-grid { grid-template-columns: repeat(2, 1fr); }
+      .bento-grid { grid-template-columns: repeat(2, 1fr); }
+      .bento-item.span-3 { grid-column: span 2; }
+      .testimonials-grid { grid-template-columns: 1fr; max-width: 600px; margin: 0 auto; }
+      .pricing-grid { grid-template-columns: 1fr; max-width: 420px; margin: 0 auto; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .floating-card { display: none; }
+    }
+
+    @media (max-width: 768px) {
+      .section { padding: 80px 0; }
+      .nav-links { display: none; }
+      .mobile-toggle { display: block; }
+      .hero { min-height: auto; padding: 120px 0 80px; }
+      .hero-title { font-size: 2.4rem; }
+      .hero-stats { flex-direction: column; gap: 16px; align-items: center; }
+      .features-grid { grid-template-columns: 1fr; }
+      .steps { grid-template-columns: 1fr; gap: 48px; }
+      .steps::before { display: none; }
+      .bento-grid { grid-template-columns: 1fr; }
+      .bento-item.span-2, .bento-item.span-3 { grid-column: span 1; }
+      .footer-grid { grid-template-columns: 1fr; }
+      .footer-bottom { flex-direction: column; text-align: center; }
+      .phone-mockup { width: 260px; height: 540px; }
+    }
+
+    @media (max-width: 480px) {
+      .container { padding: 0 16px; }
+      .hero-title { font-size: 2rem; }
+      .hero-actions { flex-direction: column; align-items: center; }
+      .cta-actions { flex-direction: column; align-items: center; }
+    }
+
+    /* ═══════════════════════════════════════════
+       MOBILE NAV OVERLAY
+    ═══════════════════════════════════════════ */
+    .mobile-nav {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 14, 23, 0.98);
+      backdrop-filter: blur(20px);
+      z-index: 999;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+    }
+    .mobile-nav.open { display: flex; }
+    .mobile-nav a {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      transition: var(--transition);
+    }
+    .mobile-nav a:hover { color: var(--primary); }
+    .mobile-nav-close {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      background: none;
+      color: var(--text-primary);
+      font-size: 1.5rem;
+      padding: 8px;
+    }
+
+    /* ═══════════════════════════════════════════
+       SCROLL INDICATOR
+    ═══════════════════════════════════════════ */
+    .scroll-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      background: var(--gradient-primary);
+      z-index: 1001;
+      transition: width 0.1s linear;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Scroll Progress -->
+  <div class="scroll-progress" id="scrollProgress"></div>
+
+  <!-- ═══════════════ NAVIGATION ═══════════════ -->
+  <nav class="navbar" id="navbar">
+    <div class="container">
+      <a href="#" class="nav-brand">
+        <img src="assets/logo.png" alt="NaviNooks" />
+        <span>NaviNooks</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#how-it-works">How It Works</a></li>
+        <li><a href="#cities">Cities</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+      </ul>
+      <a href="#download" class="btn btn-primary">Download Free</a>
+      <button class="mobile-toggle" onclick="openMobileNav()" aria-label="Open menu">
+        <i data-lucide="menu"></i>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile Nav -->
+  <div class="mobile-nav" id="mobileNav">
+    <button class="mobile-nav-close" onclick="closeMobileNav()" aria-label="Close menu">
+      <i data-lucide="x"></i>
+    </button>
+    <a href="#features" onclick="closeMobileNav()">Features</a>
+    <a href="#how-it-works" onclick="closeMobileNav()">How It Works</a>
+    <a href="#cities" onclick="closeMobileNav()">Cities</a>
+    <a href="#pricing" onclick="closeMobileNav()">Pricing</a>
+    <a href="#download" class="btn btn-primary" onclick="closeMobileNav()">Download Free</a>
+  </div>
+
+  <!-- ═══════════════ HERO ═══════════════ -->
+  <section class="hero" id="hero">
+    <div class="hero-orb hero-orb-1"></div>
+    <div class="hero-orb hero-orb-2"></div>
+    <div class="hero-orb hero-orb-3"></div>
+
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span class="dot"></span>
+          AI-Powered Travel Planning
+        </div>
+
+        <h1 class="hero-title">
+          Your Perfect Trip,<br/>
+          <span class="text-gradient">Planned by AI</span>
+        </h1>
+
+        <p class="hero-description">
+          Stop spending hours planning. NaviNooks creates optimized itineraries in seconds, books everything in one place, and helps you experience every city like a local.
+        </p>
+
+        <div class="hero-actions">
+          <a href="#download" class="btn btn-primary btn-large">
+            <i data-lucide="download"></i>
+            Get Started Free
+          </a>
+          <a href="#how-it-works" class="btn btn-secondary btn-large">
+            <i data-lucide="play-circle"></i>
+            See How It Works
+          </a>
+        </div>
+
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <span class="hero-stat-number">30+</span>
+            <span class="hero-stat-label">Cities Worldwide</span>
+          </div>
+          <div class="hero-stat">
+            <span class="hero-stat-number">7,800+</span>
+            <span class="hero-stat-label">Curated Places</span>
+          </div>
+          <div class="hero-stat">
+            <span class="hero-stat-number">45%</span>
+            <span class="hero-stat-label">Time Saved</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <!-- Floating cards -->
+        <div class="floating-card floating-card-1">
+          <span class="fc-icon">&#9992;&#65039;</span> Flight booked — $247
+        </div>
+        <div class="floating-card floating-card-2">
+          <span class="fc-icon">&#9728;&#65039;</span> 72&deg;F &middot; Clear skies
+        </div>
+        <div class="floating-card floating-card-3">
+          <span class="fc-icon">&#128205;</span> 12 places optimized
+        </div>
+
+        <!-- Phone mockup -->
+        <div class="phone-mockup">
+          <div class="phone-screen">
+            <div class="phone-notch"></div>
+            <div class="phone-screen-content">
+              <div class="phone-header">
+                <h3>NYC Itinerary</h3>
+                <p>Day 1 of 3 &middot; March 15</p>
+              </div>
+              <div class="phone-card">
+                <div class="phone-card-icon" style="background: rgba(78,205,196,0.15); color: var(--primary);">&#127965;</div>
+                <div class="phone-card-text">
+                  <h4>Statue of Liberty</h4>
+                  <p>Ferry + Island Tour</p>
+                </div>
+                <div class="phone-card-time">9:00 AM</div>
+              </div>
+              <div class="phone-card">
+                <div class="phone-card-icon" style="background: rgba(255,107,107,0.15); color: var(--accent);">&#127912;</div>
+                <div class="phone-card-text">
+                  <h4>MoMA</h4>
+                  <p>Modern Art Museum</p>
+                </div>
+                <div class="phone-card-time">12:30 PM</div>
+              </div>
+              <div class="phone-card">
+                <div class="phone-card-icon" style="background: rgba(255,230,109,0.15); color: var(--accent-warm);">&#127837;</div>
+                <div class="phone-card-text">
+                  <h4>Lunch Break</h4>
+                  <p>Italian &middot; 0.2 mi away</p>
+                </div>
+                <div class="phone-card-time">2:00 PM</div>
+              </div>
+              <div class="phone-card">
+                <div class="phone-card-icon" style="background: rgba(0,217,255,0.15); color: var(--secondary);">&#127747;</div>
+                <div class="phone-card-text">
+                  <h4>Central Park</h4>
+                  <p>Walking Tour</p>
+                </div>
+                <div class="phone-card-time">3:30 PM</div>
+              </div>
+              <div class="phone-card">
+                <div class="phone-card-icon" style="background: rgba(168,85,247,0.15); color: #A855F7;">&#127905;</div>
+                <div class="phone-card-text">
+                  <h4>Broadway Show</h4>
+                  <p>Evening Performance</p>
+                </div>
+                <div class="phone-card-time">7:00 PM</div>
+              </div>
+              <div class="phone-bottom-bar">
+                <div class="phone-tab active">
+                  <i data-lucide="map" style="width:18px;height:18px;"></i>
+                  Explore
+                </div>
+                <div class="phone-tab">
+                  <i data-lucide="calendar" style="width:18px;height:18px;"></i>
+                  Plan
+                </div>
+                <div class="phone-tab">
+                  <i data-lucide="bookmark" style="width:18px;height:18px;"></i>
+                  Saved
+                </div>
+                <div class="phone-tab">
+                  <i data-lucide="user" style="width:18px;height:18px;"></i>
+                  Profile
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ TRUST BAR ═══════════════ -->
+  <div class="trust-bar">
+    <p class="trust-bar-label">Powered by industry-leading technology</p>
+    <div class="trust-logos">
+      <div class="trust-logo">
+        <i data-lucide="map" style="width:22px;height:22px;"></i>
+        Google Maps
+      </div>
+      <div class="trust-logo">
+        <i data-lucide="cloud-sun" style="width:22px;height:22px;"></i>
+        OpenWeather
+      </div>
+      <div class="trust-logo">
+        <i data-lucide="brain" style="width:22px;height:22px;"></i>
+        Advanced AI
+      </div>
+      <div class="trust-logo">
+        <i data-lucide="shield-check" style="width:22px;height:22px;"></i>
+        Supabase
+      </div>
+      <div class="trust-logo">
+        <i data-lucide="car" style="width:22px;height:22px;"></i>
+        Uber
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ FEATURES ═══════════════ -->
+  <section class="features section" id="features">
+    <div class="container">
+      <div class="features-header animate-on-scroll">
+        <span class="section-label">Features</span>
+        <h2 class="section-title">Everything You Need,<br/><span class="text-gradient">One Intelligent App</span></h2>
+        <p class="section-subtitle">From planning to booking to navigating — NaviNooks handles every detail of your trip so you can focus on making memories.</p>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card glass-card animate-on-scroll" style="--i:0">
+          <div class="feature-icon teal">
+            <i data-lucide="sparkles" style="width:28px;height:28px;"></i>
+          </div>
+          <h3>Smart Itinerary Generation</h3>
+          <p>Tell us your interests and dates. Our AI creates a perfectly optimized day-by-day plan in under a second, respecting opening hours and peak times.</p>
+        </div>
+
+        <div class="feature-card glass-card animate-on-scroll" style="--i:1">
+          <div class="feature-icon blue">
+            <i data-lucide="plane" style="width:28px;height:28px;"></i>
+          </div>
+          <h3>Flights & Hotels</h3>
+          <p>Search and compare flights across all major airlines. Find the perfect hotel near your attractions with real-time pricing and availability.</p>
+        </div>
+
+        <div class="feature-card glass-card animate-on-scroll" style="--i:2">
+          <div class="feature-icon red">
+            <i data-lucide="navigation" style="width:28px;height:28px;"></i>
+          </div>
+          <h3>Smart Navigation</h3>
+          <p>Automatically calculates walking and driving routes between every stop. Real-time traffic data ensures you're always on the fastest path.</p>
+        </div>
+
+        <div class="feature-card glass-card animate-on-scroll" style="--i:3">
+          <div class="feature-icon yellow">
+            <i data-lucide="utensils" style="width:28px;height:28px;"></i>
+          </div>
+          <h3>Dining & Restaurants</h3>
+          <p>Smart meal scheduling finds top-rated restaurants near your route. Get personalized recommendations based on cuisine preferences and budget.</p>
+        </div>
+
+        <div class="feature-card glass-card animate-on-scroll" style="--i:4">
+          <div class="feature-icon purple">
+            <i data-lucide="ticket" style="width:28px;height:28px;"></i>
+          </div>
+          <h3>Tickets & Passes</h3>
+          <p>Compare CityPASS, Go City, and individual tickets. We calculate your exact savings and recommend the best package for your itinerary.</p>
+        </div>
+
+        <div class="feature-card glass-card animate-on-scroll" style="--i:5">
+          <div class="feature-icon green">
+            <i data-lucide="cloud-sun" style="width:28px;height:28px;"></i>
+          </div>
+          <h3>Weather-Aware Planning</h3>
+          <p>Real-time weather integration adjusts recommendations automatically. Rainy day? We'll suggest indoor alternatives that keep your trip on track.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ HOW IT WORKS ═══════════════ -->
+  <section class="how-it-works section" id="how-it-works">
+    <div class="container">
+      <div class="how-it-works-header animate-on-scroll">
+        <span class="section-label">How It Works</span>
+        <h2 class="section-title">Plan Your Dream Trip<br/><span class="text-gradient">in 3 Simple Steps</span></h2>
+        <p class="section-subtitle">No more juggling 10 tabs and spreadsheets. NaviNooks streamlines everything into one seamless experience.</p>
+      </div>
+
+      <div class="steps">
+        <div class="step animate-on-scroll" style="--i:0">
+          <div class="step-number">1</div>
+          <div class="step-icon">&#127758;</div>
+          <h3>Choose Your City</h3>
+          <p>Pick from 30+ cities worldwide. Set your travel dates, interests, and preferences. We'll handle the rest.</p>
+        </div>
+        <div class="step animate-on-scroll" style="--i:1">
+          <div class="step-number">2</div>
+          <div class="step-icon">&#9889;</div>
+          <h3>AI Generates Your Plan</h3>
+          <p>In under a second, get a perfectly organized itinerary with smart routes, dining, activities, and timing — all optimized for you.</p>
+        </div>
+        <div class="step animate-on-scroll" style="--i:2">
+          <div class="step-number">3</div>
+          <div class="step-icon">&#127881;</div>
+          <h3>Book & Explore</h3>
+          <p>Book flights, hotels, tickets, and rides directly in the app. Then follow your interactive map and enjoy every moment.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ SHOWCASE BENTO ═══════════════ -->
+  <section class="showcase section" id="showcase">
+    <div class="container-wide">
+      <div class="showcase-header animate-on-scroll">
+        <span class="section-label">Experience</span>
+        <h2 class="section-title">More Than an Itinerary.<br/><span class="text-gradient">A Complete Travel Companion.</span></h2>
+        <p class="section-subtitle">Every feature designed to make your trip effortless, from first search to final memory.</p>
+      </div>
+
+      <div class="bento-grid">
+        <div class="bento-item span-2 animate-on-scroll">
+          <div class="bento-bg" style="background-image: url('https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=800&q=80');"></div>
+          <div class="bento-content">
+            <div class="bento-icon">&#128506;</div>
+            <h3>Interactive Route Maps</h3>
+            <p>See your entire trip on an interactive map. Walking paths, driving routes, and transit options — all visualized with real-time traffic data.</p>
+          </div>
+        </div>
+        <div class="bento-item animate-on-scroll">
+          <div class="bento-bg" style="background-image: url('https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=600&q=80');"></div>
+          <div class="bento-content">
+            <div class="bento-icon">&#129302;</div>
+            <h3>AI Travel Chat</h3>
+            <p>Ask anything about your trip. Get instant, personalized answers from our AI travel assistant.</p>
+          </div>
+        </div>
+        <div class="bento-item animate-on-scroll">
+          <div class="bento-bg" style="background-image: url('https://images.unsplash.com/photo-1436491865332-7a61a109db05?w=600&q=80');"></div>
+          <div class="bento-content">
+            <div class="bento-icon">&#127750;</div>
+            <h3>Live Weather</h3>
+            <p>5-day forecasts with smart indoor/outdoor activity suggestions.</p>
+          </div>
+        </div>
+        <div class="bento-item animate-on-scroll">
+          <div class="bento-bg" style="background-image: url('https://images.unsplash.com/photo-1517400508447-f8dd518b86db?w=600&q=80');"></div>
+          <div class="bento-content">
+            <div class="bento-icon">&#128663;</div>
+            <h3>Ride Booking</h3>
+            <p>Compare Uber, Lyft, and taxi prices. Book rides timed perfectly with your itinerary.</p>
+          </div>
+        </div>
+        <div class="bento-item span-2 animate-on-scroll">
+          <div class="bento-bg" style="background-image: url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80');"></div>
+          <div class="bento-content">
+            <div class="bento-icon">&#127860;</div>
+            <h3>Smart Dining</h3>
+            <p>Never wonder where to eat again. We find top-rated restaurants along your route and schedule meals at the perfect time, complete with reviews and reservation links.</p>
+          </div>
+        </div>
+        <div class="bento-item animate-on-scroll">
+          <div class="bento-bg" style="background-image: url('https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=600&q=80');"></div>
+          <div class="bento-content">
+            <div class="bento-icon">&#127915;</div>
+            <h3>Local Events</h3>
+            <p>Discover concerts, festivals, and events happening during your visit.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ CITIES ═══════════════ -->
+  <section class="cities-section section" id="cities">
+    <div class="container">
+      <div class="cities-header animate-on-scroll">
+        <span class="section-label">Destinations</span>
+        <h2 class="section-title">Explore <span class="text-gradient">30+ Cities</span><br/>Around the World</h2>
+        <p class="section-subtitle">From the neon lights of Las Vegas to the cherry blossoms of Tokyo — your next adventure awaits.</p>
+      </div>
+    </div>
+
+    <div class="cities-scroll-container">
+      <div class="cities-row">
+        <!-- Row 1 -->
+        <div class="city-card">
+          <div class="city-card-bg" style="background-image: url('https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=400&q=80');"></div>
+          <div class="city-card-overlay">
+            <h3>New York City</h3>
+            <p>The Big Apple</p>
+          </div>
+        </div>
+        <div class="city-card">
+          <div class="city-card-bg" style="background-image: url('https://images.unsplash.com/photo-1534430480872-3498386e7856?w=400&q=80');"></div>
+          <div class="city-card-overlay">
+            <h3>Los Angeles</h3>
+            <p>City of Angels</p>
+          </div>
+        </div>
+        <div class="city-card">
+          <div class="city-card-bg" style="background-image: url('https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=400&q=80');"></div>
+          <div class="city-card-overlay">
+            <h3>Miami</h3>
+            <p>Magic City</p>
+          </div>
+        </div>
+        <div class="city-card">
+          <div class="city-card-bg" style="background-image: url('https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=400&q=80');"></div>
+          <div class="city-card-overlay">
+            <h3>Chicago</h3>
+            <p>The Windy City</p>
+          </div>
+        </div>
+        <div class="city-card">
+          <div class="city-card-bg" style="background-image: url('https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=400&q=80');"></div>
+          <div class="city-card-overlay">
+            <h3>San Francisco</h3>
+            <p>Golden Gate City</p>
+          </div>
+        </div>
+        <div class="city-card">
+          <div class="city-card-bg" style="background-image: url('https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?w=400&q=80');"></div>
+          <div class="city-card-overlay">
+            <h3>Las Vegas</h3>
+            <p>The Entertainment Capital</p>
+          </div>
+        </div>
+        <div class="city-card">
+          <div class="city-card-bg" style="background-image: url('https://images.unsplash.com/photo-1543832923-44667a44c860?w=400&q=80');"></div>
+          <div class="city-card-overlay">
+            <h3>Tokyo</h3>
+            <p>Where Tradition Meets Future</p>
+          </div>
+        </div>
+        <div class="city-card">
+          <div class="city-card-bg" style="background-image: url('https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=400&q=80');"></div>
+          <div class="city-card-overlay">
+            <h3>Paris</h3>
+            <p>City of Lights</p>
+          </div>
+        </div>
+        <!-- Duplicate for infinite scroll -->
+        <div class="city-card">
+          <div class="city-card-bg" style="background-image: url('https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=400&q=80');"></div>
+          <div class="city-card-overlay">
+            <h3>New York City</h3>
+            <p>The Big Apple</p>
+          </div>
+        </div>
+        <div class="city-card">
+          <div class="city-card-bg" style="background-image: url('https://images.unsplash.com/photo-1534430480872-3498386e7856?w=400&q=80');"></div>
+          <div class="city-card-overlay">
+            <h3>Los Angeles</h3>
+            <p>City of Angels</p>
+          </div>
+        </div>
+        <div class="city-card">
+          <div class="city-card-bg" style="background-image: url('https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=400&q=80');"></div>
+          <div class="city-card-overlay">
+            <h3>Miami</h3>
+            <p>Magic City</p>
+          </div>
+        </div>
+        <div class="city-card">
+          <div class="city-card-bg" style="background-image: url('https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=400&q=80');"></div>
+          <div class="city-card-overlay">
+            <h3>Chicago</h3>
+            <p>The Windy City</p>
+          </div>
+        </div>
+        <div class="city-card">
+          <div class="city-card-bg" style="background-image: url('https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=400&q=80');"></div>
+          <div class="city-card-overlay">
+            <h3>San Francisco</h3>
+            <p>Golden Gate City</p>
+          </div>
+        </div>
+        <div class="city-card">
+          <div class="city-card-bg" style="background-image: url('https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?w=400&q=80');"></div>
+          <div class="city-card-overlay">
+            <h3>Las Vegas</h3>
+            <p>The Entertainment Capital</p>
+          </div>
+        </div>
+        <div class="city-card">
+          <div class="city-card-bg" style="background-image: url('https://images.unsplash.com/photo-1543832923-44667a44c860?w=400&q=80');"></div>
+          <div class="city-card-overlay">
+            <h3>Tokyo</h3>
+            <p>Where Tradition Meets Future</p>
+          </div>
+        </div>
+        <div class="city-card">
+          <div class="city-card-bg" style="background-image: url('https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=400&q=80');"></div>
+          <div class="city-card-overlay">
+            <h3>Paris</h3>
+            <p>City of Lights</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="cities-row cities-row-reverse">
+        <div class="city-card">
+          <div class="city-card-bg" style="background-image: url('https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=400&q=80');"></div>
+          <div class="city-card-overlay">
+            <h3>London</h3>
+            <p>The Crown Jewel</p>
+          </div>
+        </div>
+        <div class="city-card">
+          <div class="city-card-bg" style="background-image: url('https://images.unsplash.com/photo-1555921015-5532091f6026?w=400&q=80');"></div>
+          <div class="city-card-overlay">
+            <h3>Washington D.C.</h3>
+            <p>The Nation's Capital</p>
+          </div>
+        </div>
+        <div class="city-card">
+          <div class="city-card-bg" style="background-image: url('https://images.unsplash.com/photo-1547981609-4b6bfe67ca0b?w=400&q=80');"></div>
+          <div class="city-card-overlay">
+            <h3>Denver</h3>
+            <p>Mile High City</p>
+          </div>
+        </div>
+        <div class="city-card">
+          <div class="city-card-bg" style="background-image: url('https://images.unsplash.com/photo-1467269204594-9661b134dd2b?w=400&q=80');"></div>
+          <div class="city-card-overlay">
+            <h3>Barcelona</h3>
+            <p>Mediterranean Gem</p>
+          </div>
+        </div>
+        <div class="city-card">
+          <div class="city-card-bg" style="background-image: url('https://images.unsplash.com/photo-1568402102990-bc541580b59f?w=400&q=80');"></div>
+          <div class="city-card-overlay">
+            <h3>Nashville</h3>
+            <p>Music City</p>
+          </div>
+        </div>
+        <div class="city-card">
+          <div class="city-card-bg" style="background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&q=80');"></div>
+          <div class="city-card-overlay">
+            <h3>Honolulu</h3>
+            <p>Paradise of the Pacific</p>
+          </div>
+        </div>
+        <div class="city-card">
+          <div class="city-card-bg" style="background-image: url('https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=400&q=80');"></div>
+          <div class="city-card-overlay">
+            <h3>Rome</h3>
+            <p>The Eternal City</p>
+          </div>
+        </div>
+        <div class="city-card">
+          <div class="city-card-bg" style="background-image: url('https://images.unsplash.com/photo-1468824357306-a439d58ccb1c?w=400&q=80');"></div>
+          <div class="city-card-overlay">
+            <h3>Seattle</h3>
+            <p>Emerald City</p>
+          </div>
+        </div>
+        <!-- Duplicates for seamless loop -->
+        <div class="city-card">
+          <div class="city-card-bg" style="background-image: url('https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=400&q=80');"></div>
+          <div class="city-card-overlay">
+            <h3>London</h3>
+            <p>The Crown Jewel</p>
+          </div>
+        </div>
+        <div class="city-card">
+          <div class="city-card-bg" style="background-image: url('https://images.unsplash.com/photo-1555921015-5532091f6026?w=400&q=80');"></div>
+          <div class="city-card-overlay">
+            <h3>Washington D.C.</h3>
+            <p>The Nation's Capital</p>
+          </div>
+        </div>
+        <div class="city-card">
+          <div class="city-card-bg" style="background-image: url('https://images.unsplash.com/photo-1547981609-4b6bfe67ca0b?w=400&q=80');"></div>
+          <div class="city-card-overlay">
+            <h3>Denver</h3>
+            <p>Mile High City</p>
+          </div>
+        </div>
+        <div class="city-card">
+          <div class="city-card-bg" style="background-image: url('https://images.unsplash.com/photo-1467269204594-9661b134dd2b?w=400&q=80');"></div>
+          <div class="city-card-overlay">
+            <h3>Barcelona</h3>
+            <p>Mediterranean Gem</p>
+          </div>
+        </div>
+        <div class="city-card">
+          <div class="city-card-bg" style="background-image: url('https://images.unsplash.com/photo-1568402102990-bc541580b59f?w=400&q=80');"></div>
+          <div class="city-card-overlay">
+            <h3>Nashville</h3>
+            <p>Music City</p>
+          </div>
+        </div>
+        <div class="city-card">
+          <div class="city-card-bg" style="background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&q=80');"></div>
+          <div class="city-card-overlay">
+            <h3>Honolulu</h3>
+            <p>Paradise of the Pacific</p>
+          </div>
+        </div>
+        <div class="city-card">
+          <div class="city-card-bg" style="background-image: url('https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=400&q=80');"></div>
+          <div class="city-card-overlay">
+            <h3>Rome</h3>
+            <p>The Eternal City</p>
+          </div>
+        </div>
+        <div class="city-card">
+          <div class="city-card-bg" style="background-image: url('https://images.unsplash.com/photo-1468824357306-a439d58ccb1c?w=400&q=80');"></div>
+          <div class="city-card-overlay">
+            <h3>Seattle</h3>
+            <p>Emerald City</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ TESTIMONIALS ═══════════════ -->
+  <section class="testimonials section" id="testimonials">
+    <div class="container">
+      <div class="testimonials-header animate-on-scroll">
+        <span class="section-label">Testimonials</span>
+        <h2 class="section-title">Loved by <span class="text-gradient">Travelers</span><br/>Around the World</h2>
+        <p class="section-subtitle">Join thousands of travelers who've transformed the way they explore new cities.</p>
+      </div>
+
+      <div class="testimonials-grid">
+        <div class="testimonial-card glass-card animate-on-scroll" style="--i:0">
+          <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p class="testimonial-text">"I planned a 5-day NYC trip in literally 30 seconds. The itinerary was better than anything I could have made spending hours on Google. The route optimization alone saved us 2 hours of walking per day."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">SK</div>
+            <div class="testimonial-info">
+              <h4>Sarah K.</h4>
+              <p>Solo Traveler, NYC Trip</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card glass-card animate-on-scroll" style="--i:1">
+          <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p class="testimonial-text">"The flight + hotel search is a game changer. Instead of switching between 5 different apps, everything was right there. Plus the ticket package comparison saved us over $120 on attraction passes."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">MR</div>
+            <div class="testimonial-info">
+              <h4>Marcus R.</h4>
+              <p>Family of 4, Chicago Trip</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card glass-card animate-on-scroll" style="--i:2">
+          <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p class="testimonial-text">"The weather integration is brilliant. It rained on day 2 of our San Francisco trip and the app had already suggested indoor alternatives. The AI chat answered every random question we had on the go."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">JL</div>
+            <div class="testimonial-info">
+              <h4>Jessica L.</h4>
+              <p>Couple, SF Weekend Trip</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ PRICING ═══════════════ -->
+  <section class="pricing section" id="pricing">
+    <div class="container">
+      <div class="pricing-header animate-on-scroll">
+        <span class="section-label">Pricing</span>
+        <h2 class="section-title">Start Free.<br/><span class="text-gradient">Upgrade When Ready.</span></h2>
+        <p class="section-subtitle">No credit card required. Start planning your perfect trip today.</p>
+      </div>
+
+      <div class="pricing-grid">
+        <div class="pricing-card glass-card animate-on-scroll" style="--i:0">
+          <p class="pricing-plan-name">Explorer</p>
+          <p class="pricing-price">Free</p>
+          <p class="pricing-desc">Perfect for trying NaviNooks</p>
+          <ul class="pricing-features">
+            <li><i data-lucide="check" style="width:18px;height:18px;"></i> 1-day trip planning</li>
+            <li><i data-lucide="check" style="width:18px;height:18px;"></i> 30+ city access</li>
+            <li><i data-lucide="check" style="width:18px;height:18px;"></i> Smart route optimization</li>
+            <li><i data-lucide="check" style="width:18px;height:18px;"></i> Weather integration</li>
+            <li><i data-lucide="check" style="width:18px;height:18px;"></i> Flight & hotel search</li>
+          </ul>
+          <a href="#download" class="btn btn-secondary">Get Started</a>
+        </div>
+
+        <div class="pricing-card glass-card featured animate-on-scroll" style="--i:1">
+          <p class="pricing-plan-name">Traveler</p>
+          <p class="pricing-price">$4.99<span>/mo</span></p>
+          <p class="pricing-desc">For avid travelers and explorers</p>
+          <ul class="pricing-features">
+            <li><i data-lucide="check" style="width:18px;height:18px;"></i> Multi-day trip planning</li>
+            <li><i data-lucide="check" style="width:18px;height:18px;"></i> AI travel chat assistant</li>
+            <li><i data-lucide="check" style="width:18px;height:18px;"></i> Advanced optimization</li>
+            <li><i data-lucide="check" style="width:18px;height:18px;"></i> Ticket package analysis</li>
+            <li><i data-lucide="check" style="width:18px;height:18px;"></i> Unlimited saved trips</li>
+            <li><i data-lucide="check" style="width:18px;height:18px;"></i> AI travel insights</li>
+          </ul>
+          <a href="#download" class="btn btn-primary">Start Free Trial</a>
+        </div>
+
+        <div class="pricing-card glass-card animate-on-scroll" style="--i:2">
+          <p class="pricing-plan-name">Globetrotter</p>
+          <p class="pricing-price">$9.99<span>/mo</span></p>
+          <p class="pricing-desc">For power travelers and groups</p>
+          <ul class="pricing-features">
+            <li><i data-lucide="check" style="width:18px;height:18px;"></i> Everything in Traveler</li>
+            <li><i data-lucide="check" style="width:18px;height:18px;"></i> 7-day trip planning</li>
+            <li><i data-lucide="check" style="width:18px;height:18px;"></i> Trip sharing & social</li>
+            <li><i data-lucide="check" style="width:18px;height:18px;"></i> PDF export</li>
+            <li><i data-lucide="check" style="width:18px;height:18px;"></i> Priority support</li>
+            <li><i data-lucide="check" style="width:18px;height:18px;"></i> Early access to new cities</li>
+          </ul>
+          <a href="#download" class="btn btn-secondary">Start Free Trial</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ FINAL CTA ═══════════════ -->
+  <section class="cta-section" id="download">
+    <div class="cta-bg"></div>
+    <div class="container">
+      <div class="cta-content animate-on-scroll">
+        <span class="section-label">Ready to Explore?</span>
+        <h2 class="section-title">Your Next Adventure<br/><span class="text-gradient">Starts Here</span></h2>
+        <p class="section-subtitle">Download NaviNooks and plan your dream trip in seconds. Available on iOS and Android.</p>
+
+        <div class="cta-actions">
+          <a href="#" class="store-btn">
+            <span class="store-btn-icon">&#63743;</span>
+            <span class="store-btn-text">
+              <small>Download on the</small>
+              <strong>App Store</strong>
+            </span>
+          </a>
+          <a href="#" class="store-btn">
+            <span class="store-btn-icon">&#9654;</span>
+            <span class="store-btn-text">
+              <small>Get it on</small>
+              <strong>Google Play</strong>
+            </span>
+          </a>
+        </div>
+
+        <div class="hero-stats" style="justify-content: center;">
+          <div class="hero-stat">
+            <span class="hero-stat-number">30+</span>
+            <span class="hero-stat-label">Cities</span>
+          </div>
+          <div class="hero-stat">
+            <span class="hero-stat-number">4.9</span>
+            <span class="hero-stat-label">App Rating</span>
+          </div>
+          <div class="hero-stat">
+            <span class="hero-stat-number">Free</span>
+            <span class="hero-stat-label">To Start</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ FOOTER ═══════════════ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="#" class="nav-brand">
+            <img src="assets/logo.png" alt="NaviNooks" style="width:36px;height:36px;border-radius:8px;" />
+            <span>NaviNooks</span>
+          </a>
+          <p>Your AI-powered travel companion. Plan smarter, book easier, explore more.</p>
+          <div class="footer-social">
+            <a href="#" aria-label="Twitter"><i data-lucide="twitter" style="width:18px;height:18px;"></i></a>
+            <a href="#" aria-label="Instagram"><i data-lucide="instagram" style="width:18px;height:18px;"></i></a>
+            <a href="#" aria-label="Facebook"><i data-lucide="facebook" style="width:18px;height:18px;"></i></a>
+            <a href="#" aria-label="YouTube"><i data-lucide="youtube" style="width:18px;height:18px;"></i></a>
+          </div>
+        </div>
+        <div class="footer-column">
+          <h4>Product</h4>
+          <ul>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#pricing">Pricing</a></li>
+            <li><a href="#cities">Cities</a></li>
+            <li><a href="#download">Download</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Press</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Support</h4>
+          <ul>
+            <li><a href="#">Help Center</a></li>
+            <li><a href="#">Contact Us</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Xnoks LLC. All rights reserved.</p>
+        <div class="footer-bottom-links">
+          <a href="#">Privacy</a>
+          <a href="#">Terms</a>
+          <a href="#">Cookies</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ═══════════════ SCRIPTS ═══════════════ -->
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // ── Navbar scroll effect ──
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    // ── Scroll progress bar ──
+    const scrollProgress = document.getElementById('scrollProgress');
+    window.addEventListener('scroll', () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrollPercent = (scrollTop / docHeight) * 100;
+      scrollProgress.style.width = scrollPercent + '%';
+    });
+
+    // ── Scroll animations (Intersection Observer) ──
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, index) => {
+        if (entry.isIntersecting) {
+          // Add stagger delay based on sibling index
+          const siblings = entry.target.parentElement.children;
+          const idx = Array.from(siblings).indexOf(entry.target);
+          entry.target.style.transitionDelay = (idx * 0.08) + 's';
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+    document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+
+    // ── Mobile nav ──
+    function openMobileNav() {
+      document.getElementById('mobileNav').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeMobileNav() {
+      document.getElementById('mobileNav').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    // ── Smooth scroll for anchor links ──
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
